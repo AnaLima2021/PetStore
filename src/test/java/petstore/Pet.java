@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
 
 // 3 - Classe
 public class Pet {
@@ -39,10 +41,35 @@ public class Pet {
         .then() // Então
                 .log().all()
                 .statusCode(200)
+                .body("name",  is("Marleey"))
+                .body("status", is("available"))
+                .body("category.name", is("dog"))
+                .body("tags.name", contains("sta"))
+
         ;
 
 
 
+    }
+    @Test
+    public void consultarPet(){
+        String petId = "1805199229";
+
+        given()
+                .contentType("application/json")
+                .log().all()
+        .when()
+                .get(uri + "/" + petId)
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("name", is("Marleey"))
+                .body("category.name", is ("dog"))
+                .body("status",is("available"))
+        .extract()
+                .path("category.name")
+        ;
+        System.out.println("dog");
 
 
 
